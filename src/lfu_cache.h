@@ -16,6 +16,5 @@ public:
 private:
     int size_cache;
     std::unordered_map<int, std::pair <int,int>> data;
-    std::unordered_map <int, std::list<int>> list_key;
-    std::list <int> arr_count;
+    std::list <int> list_element_cache;
 };
