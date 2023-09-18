@@ -2,7 +2,7 @@
 #include <iostream>
 #include <list>
 #include <unordered_map>
-#include <algorithm>
+
 using namespace std;
 
 
@@ -15,14 +15,18 @@ int LFU_cache::get(int key){
     return 0;
 }
 int LFU_cache::put(int key, int element){
-    if (size_cache == 0){
-        cout << "zero cache size" << endl;
-        return -1;
-    }
+
     if (data.find(key) != data.end()) {
-        data[key].second++;
-        list_element_cache.remove(element);
-        list_element_cache.push_back(element);
+        int old_count = data[key].second;
+        int new_count = old_count + 1;
+        data[key].second = new_count;
+
+
+        list_key[old_count].remove(key);
+        if (list_key[old_count].empty()){
+            list_key.erase(old_count);
+        }
+        list_key[new_count].push_back(key);
 
 
         return 0;
@@ -31,25 +35,28 @@ int LFU_cache::put(int key, int element){
 
     else if (data.size() < size_cache){
         data[key] = {element, 1};
-        list_element_cache.push_back(element);
+        list_key[1].push_back(key);
 
         return 0;
     }
 
     else {
-        auto min_it = list_element_cache.begin();
-
-        for (auto elem_it = list_element_cache.begin(); elem_it != list_element_cache.end(); elem_it++){
-            if (data[*elem_it].second < data[*min_it].second){
-                min_it = elem_it;
-            }
+        int min_count = 1;
+        while (list_key.find(min_count) == list_key.end()){
+            min_count++;
         }
 
-        data.erase(*min_it);
-        data[key] = { element, 1 };
 
-        list_element_cache.erase(min_it);
-        list_element_cache.push_back(element);
+        int key_min_used_element = list_key[min_count].front();
+        data.erase(key_min_used_element);
+        list_key[min_count].pop_front();
+
+        if (list_key[min_count].empty()){
+            list_key.erase(min_count);
+        }
+
+        data[key] = { element, 1 };
+        list_key[1].push_back(key);
 
         return 0;
     }

@@ -25,10 +25,6 @@ int Ideal_cache::get(int key){
 }
 
 void Ideal_cache::put_in_cache(int key, int element) {
-    if (size_cache == 0) {
-        cout << "zero cache size" << endl;
-        return;
-    }
 
     if (cache_element.find(key) != cache_element.end()) {
         data[key].first--;

@@ -1,7 +1,7 @@
 #include <iostream>
 #include <list>
 #include <unordered_map>
-#include <algorithm>
+
 #include "lfu_cache.h"
 using namespace std;
 
@@ -11,6 +11,11 @@ int main()
 
     cin >> size_cache >> quanity_element;
     LFU_cache cache(size_cache);
+
+    if (size_cache == 0){
+        cout << "zero cache size" << endl;
+        exit;
+    }
 
     for (int i = 0; i < quanity_element; i++){
         int element, key;
