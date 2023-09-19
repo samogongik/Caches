@@ -4,7 +4,7 @@
 #include <iostream>
 #include <list>
 #include <unordered_map>
-
+#include <algorithm>
 
 
 class LFU_cache{
@@ -17,4 +17,5 @@ private:
     int size_cache;
     std::unordered_map<int, std::pair <int,int>> data;
     std::unordered_map <int, std::list<int>> list_key;
+    std:: unordered_map<int, std::list<int>::iterator> data_it;
 };

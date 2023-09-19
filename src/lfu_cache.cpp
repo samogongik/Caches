@@ -21,12 +21,15 @@ int LFU_cache::put(int key, int element){
         int new_count = old_count + 1;
         data[key].second = new_count;
 
+        list_key[old_count].erase(data_it[key]);
+        data_it.erase(key);
 
-        list_key[old_count].remove(key);
         if (list_key[old_count].empty()){
             list_key.erase(old_count);
         }
+
         list_key[new_count].push_back(key);
+        data_it[key] = prev(list_key[new_count].end());
 
 
         return 0;
@@ -36,6 +39,7 @@ int LFU_cache::put(int key, int element){
     else if (data.size() < size_cache){
         data[key] = {element, 1};
         list_key[1].push_back(key);
+        data_it[key] = prev(list_key[1].end());
 
         return 0;
     }
@@ -49,6 +53,7 @@ int LFU_cache::put(int key, int element){
 
         int key_min_used_element = list_key[min_count].front();
         data.erase(key_min_used_element);
+        data_it.erase(key_min_used_element);
         list_key[min_count].pop_front();
 
         if (list_key[min_count].empty()){
@@ -57,6 +62,7 @@ int LFU_cache::put(int key, int element){
 
         data[key] = { element, 1 };
         list_key[1].push_back(key);
+        data_it[key] = prev(list_key[1].end());
 
         return 0;
     }
