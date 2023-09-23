@@ -1,24 +1,23 @@
-
-
 #include "ideal_cache.h"
 
-Ideal_cache::Ideal_cache(int size_cache) : size_cache(size_cache){}
+template <typename KeyType, typename ValueType>
+Ideal_cache<KeyType, ValueType>::Ideal_cache(int size_cache) : size_cache(size_cache) {}
 
-void Ideal_cache::data_put(int key, int index){
+template <typename KeyType, typename ValueType>
+void Ideal_cache<KeyType, ValueType>::data_put(const KeyType& key, const ValueType& index) {
 
-    if (data.find(key) == data.end()){
+    if (data.find(key) == data.end()) {
         data[key].first = 1;
         data[key].second.push_back(index);
     }
-
-    else{
+    else {
         data[key].first += 1;
         data[key].second.push_back(index);
     }
 }
 
-
-int Ideal_cache::lookup_update(int key, int element) {
+template <typename KeyType, typename ValueType>
+int Ideal_cache<KeyType, ValueType>::lookup_update(const KeyType& key, const ValueType& element) {
 
     if (cache_element.find(key) != cache_element.end()) {
         data[key].first--;
@@ -33,7 +32,7 @@ int Ideal_cache::lookup_update(int key, int element) {
 
         if (data[key].first == 1) {
             data.erase(key);
-            return 0 ;
+            return 0;
         }
 
         cache_element[key] = element;
@@ -64,7 +63,7 @@ int Ideal_cache::lookup_update(int key, int element) {
             }
         }
 
-        if (flag == 1){
+        if (flag == 1) {
             data.erase(*old_elem_it);
 
             data[key].first--;
@@ -98,3 +97,6 @@ int Ideal_cache::lookup_update(int key, int element) {
         return 0;
     }
 }
+
+// Эксплицитная инстанциация шаблона для конкретных типов int, чтобы компилятор создал код для них.
+template class Ideal_cache<int, int>;

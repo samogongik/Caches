@@ -10,7 +10,7 @@ int main()
     int size_cache = 0, quanity_element = 0, kol = 0;
 
     cin >> size_cache >> quanity_element;
-    LFU_cache cache(size_cache);
+    LFU_cache<int, int> cache(size_cache);
 
     if (size_cache == 0){
         cout << "zero cache size" << endl;

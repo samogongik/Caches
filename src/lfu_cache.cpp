@@ -1,15 +1,13 @@
-#include "lfu_cache.h"
 #include <iostream>
 #include <list>
 #include <unordered_map>
+#include "lfu_cache.h"
 
-using namespace std;
+template <typename KeyType, typename ValueType>
+LFU_cache<KeyType, ValueType>::LFU_cache(int size_cache) : size_cache(size_cache) {}
 
-
-LFU_cache::LFU_cache(int size_cache) : size_cache(size_cache) {}
-
-
-int LFU_cache::lookup_update(int key, int element){
+template <typename KeyType, typename ValueType>
+int LFU_cache<KeyType, ValueType>::lookup_update(const KeyType& key, const ValueType& element) {
 
     if (data.find(key) != data.end()) {
         int old_count = data[key].second;
@@ -25,7 +23,6 @@ int LFU_cache::lookup_update(int key, int element){
 
         list_key[new_count].push_back(key);
         data_it[key] = prev(list_key[new_count].end());
-
 
         return 1;
 
@@ -45,7 +42,6 @@ int LFU_cache::lookup_update(int key, int element){
             min_count++;
         }
 
-
         int key_min_used_element = list_key[min_count].front();
         data.erase(key_min_used_element);
         data_it.erase(key_min_used_element);
@@ -64,4 +60,4 @@ int LFU_cache::lookup_update(int key, int element){
 }
 
 
-
+template class LFU_cache<int, int>;

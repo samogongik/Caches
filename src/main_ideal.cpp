@@ -14,7 +14,7 @@ int main()
     int size_cache = 0, quanity_element = 0, kol = 0;
     vector <int> vector_element;
     cin >> size_cache >> quanity_element;
-    Ideal_cache cache(size_cache);
+    Ideal_cache<int, int> cache(size_cache);
 
     if (size_cache == 0){
         cout << "zero cache size" << endl;
