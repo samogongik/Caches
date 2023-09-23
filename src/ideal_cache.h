@@ -13,9 +13,9 @@ public:
 
     void data_put(int key, int index);
 
-    int get(int key);
 
-    void put_in_cache(int key, int element);
+
+    int lookup_update(int key, int element);
 
 private:
     int size_cache;

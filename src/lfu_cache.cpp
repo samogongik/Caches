@@ -8,13 +8,8 @@ using namespace std;
 
 LFU_cache::LFU_cache(int size_cache) : size_cache(size_cache) {}
 
-int LFU_cache::get(int key){
-    if (data.find(key) != data.end()){
-        return 1;
-    }
-    return 0;
-}
-int LFU_cache::put(int key, int element){
+
+int LFU_cache::lookup_update(int key, int element){
 
     if (data.find(key) != data.end()) {
         int old_count = data[key].second;
@@ -32,7 +27,7 @@ int LFU_cache::put(int key, int element){
         data_it[key] = prev(list_key[new_count].end());
 
 
-        return 0;
+        return 1;
 
     }
 

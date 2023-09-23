@@ -4,14 +4,14 @@
 #include <iostream>
 #include <list>
 #include <unordered_map>
-#include <algorithm>
+
 
 
 class LFU_cache{
 public:
     LFU_cache(int size_cache);
-    int get(int key);
-    int put(int key, int element);
+
+    int lookup_update(int key, int element);
 
 private:
     int size_cache;

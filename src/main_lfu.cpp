@@ -14,15 +14,15 @@ int main()
 
     if (size_cache == 0){
         cout << "zero cache size" << endl;
-        exit;
+        exit(0);
     }
 
     for (int i = 0; i < quanity_element; i++){
         int element, key;
         cin >> element;
         key = element;
-        kol += cache.get(key);
-        cache.put(key, element);
+        kol += cache.lookup_update(key, element);
+
     }
 
     cout << kol;

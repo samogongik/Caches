@@ -18,7 +18,7 @@ int main()
 
     if (size_cache == 0){
         cout << "zero cache size" << endl;
-        exit;
+        exit(0);
     }
 
     for (int i = 0; i < quanity_element; i++){
@@ -33,8 +33,8 @@ int main()
 
     for (int i = 0; i < vector_element.size(); i++){
         int key = vector_element[i];
-        kol += cache.get(key);
-        cache.put_in_cache(key, vector_element[i]);
+        kol += cache.lookup_update(key, vector_element[i]);
+
 
     }
 

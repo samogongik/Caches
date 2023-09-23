@@ -17,14 +17,8 @@ void Ideal_cache::data_put(int key, int index){
     }
 }
 
-int Ideal_cache::get(int key){
-    if (cache_element.find(key) != cache_element.end()){
-        return 1;
-    }
-    return 0;
-}
 
-void Ideal_cache::put_in_cache(int key, int element) {
+int Ideal_cache::lookup_update(int key, int element) {
 
     if (cache_element.find(key) != cache_element.end()) {
         data[key].first--;
@@ -33,11 +27,13 @@ void Ideal_cache::put_in_cache(int key, int element) {
         if (data[key].second.empty()) {
             data.erase(key);
         }
-    } else if (cache_element.size() < size_cache) {
+        return 1;
+    }
+    else if (cache_element.size() < size_cache) {
 
         if (data[key].first == 1) {
             data.erase(key);
-            return;
+            return 0 ;
         }
 
         cache_element[key] = element;
@@ -48,10 +44,13 @@ void Ideal_cache::put_in_cache(int key, int element) {
         if (data[key].second.empty()) {
             data.erase(key);
         }
-    } else {
+
+        return 0;
+    }
+    else {
         if (data[key].first == 1) {
             data.erase(key);
-            return;
+            return 0;
         }
 
         int key_last = 0;
@@ -77,7 +76,7 @@ void Ideal_cache::put_in_cache(int key, int element) {
             list_element_cache.erase(old_elem_it);
             list_element_cache.push_back(element);
 
-            return;
+            return 0;
         }
 
         for (auto elem_it = list_element_cache.begin(); elem_it != list_element_cache.end(); elem_it++) {
@@ -95,5 +94,7 @@ void Ideal_cache::put_in_cache(int key, int element) {
 
         list_element_cache.erase(old_elem_it);
         list_element_cache.push_back(element);
+
+        return 0;
     }
 }
