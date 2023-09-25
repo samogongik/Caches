@@ -60,4 +60,4 @@ int LFU_cache<KeyType, ValueType>::lookup_update(const KeyType& key, const Value
 }
 
 
-template class LFU_cache<int, int>;
+

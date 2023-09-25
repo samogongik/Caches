@@ -98,5 +98,5 @@ int Ideal_cache<KeyType, ValueType>::lookup_update(const KeyType& key, const Val
     }
 }
 
-// Эксплицитная инстанциация шаблона для конкретных типов int, чтобы компилятор создал код для них.
-template class Ideal_cache<int, int>;
+
+
