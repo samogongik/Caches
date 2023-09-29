@@ -4,12 +4,17 @@
 #include <list>
 #include <unordered_map>
 
+int slow_get_page_int(int element) {
+    return element;
+}
+
 template <typename KeyType, typename ValueType>
 class LFU_cache {
 public:
     LFU_cache(int size_cache);
 
-    int lookup_update(const KeyType& key, const ValueType& element);
+    bool lookup_update(const KeyType& key, const ValueType& element);
+    void cache_erase(const KeyType& key, const ValueType& element);
 
 private:
     int size_cache;
@@ -22,7 +27,31 @@ template <typename KeyType, typename ValueType>
 LFU_cache<KeyType, ValueType>::LFU_cache(int size_cache) : size_cache(size_cache) {}
 
 template <typename KeyType, typename ValueType>
-int LFU_cache<KeyType, ValueType>::lookup_update(const KeyType& key, const ValueType& element) {
+void LFU_cache<KeyType, ValueType>::cache_erase(const KeyType &key, const ValueType &element) {
+    int min_count = 1;
+    while (list_key.find(min_count) == list_key.end()){
+        min_count++;
+    }
+
+    int key_min_used_element = list_key[min_count].front();
+    data.erase(key_min_used_element);
+    data_it.erase(key_min_used_element);
+    list_key[min_count].pop_front();
+
+    if (list_key[min_count].empty()){
+        list_key.erase(min_count);
+    }
+
+    data[key] = { element, 1 };
+    list_key[1].push_back(key);
+    data_it[key] = prev(list_key[1].end());
+
+
+
+}
+
+template <typename KeyType, typename ValueType>
+bool LFU_cache<KeyType, ValueType>::lookup_update(const KeyType& key, const ValueType& element) {
 
     if (data.find(key) != data.end()) {
         int old_count = data[key].second;
@@ -52,24 +81,7 @@ int LFU_cache<KeyType, ValueType>::lookup_update(const KeyType& key, const Value
     }
 
     else {
-        int min_count = 1;
-        while (list_key.find(min_count) == list_key.end()){
-            min_count++;
-        }
-
-        int key_min_used_element = list_key[min_count].front();
-        data.erase(key_min_used_element);
-        data_it.erase(key_min_used_element);
-        list_key[min_count].pop_front();
-
-        if (list_key[min_count].empty()){
-            list_key.erase(min_count);
-        }
-
-        data[key] = { element, 1 };
-        list_key[1].push_back(key);
-        data_it[key] = prev(list_key[1].end());
-
+        cache_erase(key, element);
         return 0;
     }
 }

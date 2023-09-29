@@ -5,12 +5,18 @@
 #include <list>
 #include <vector>
 
+int slow_get_page_int(int element) {
+    return element;
+}
+
 template <typename KeyType, typename ValueType>
 class Ideal_cache {
 public:
     Ideal_cache(int size_cache);
     void data_put(const KeyType& key, const ValueType& index);
-    int lookup_update(const KeyType& key, const ValueType& element);
+    bool lookup_update(const KeyType& key, const ValueType& element);
+    void cache_erase(const KeyType& key, const ValueType& element);
+    void alternative_erase(const KeyType& key, const ValueType& element);
 
 private:
     int size_cache;
@@ -34,9 +40,65 @@ void Ideal_cache<KeyType, ValueType>::data_put(const KeyType& key, const ValueTy
         data[key].second.push_back(index);
     }
 }
+template <typename KeyType, typename ValueType>
+void Ideal_cache<KeyType, ValueType>::alternative_erase(const KeyType &key, const ValueType &element){
+
+    int key_last = 0;
+    auto old_elem_it = list_element_cache.begin();
+    for (auto elem_it = list_element_cache.begin(); elem_it != list_element_cache.end(); elem_it++) {
+        if (key_last < (data[*elem_it].second.front())) {
+            key_last = (data[*elem_it].second.front());
+            old_elem_it = elem_it;
+        }
+    }
+
+    data[key].first--;
+    data[key].second.pop_front();
+
+    cache_element.erase(*old_elem_it);
+    cache_element[key] = element;
+
+    list_element_cache.erase(old_elem_it);
+    list_element_cache.push_back(element);
+}
 
 template <typename KeyType, typename ValueType>
-int Ideal_cache<KeyType, ValueType>::lookup_update(const KeyType& key, const ValueType& element) {
+void Ideal_cache<KeyType, ValueType>::cache_erase(const KeyType &key, const ValueType &element){
+    if (data[key].first == 1) {
+        data.erase(key);
+        return;
+    }
+
+    int key_last = 0;
+    auto old_elem_it = list_element_cache.begin();
+    bool flag = 0;
+
+    for (auto elem_it = list_element_cache.begin(); elem_it != list_element_cache.end(); elem_it++) {
+        if ((data[*elem_it].second.empty())) {
+            old_elem_it = elem_it;
+            flag = 1;
+        }
+    }
+
+    if (flag == 1) {
+        data.erase(*old_elem_it);
+
+        data[key].first--;
+        data[key].second.pop_front();
+
+        cache_element.erase(*old_elem_it);
+        cache_element[key] = element;
+
+        list_element_cache.erase(old_elem_it);
+        list_element_cache.push_back(element);
+
+        return;
+    }
+    alternative_erase(key, element);
+}
+
+template <typename KeyType, typename ValueType>
+bool Ideal_cache<KeyType, ValueType>::lookup_update(const KeyType& key, const ValueType& element) {
 
     if (cache_element.find(key) != cache_element.end()) {
         data[key].first--;
@@ -66,55 +128,12 @@ int Ideal_cache<KeyType, ValueType>::lookup_update(const KeyType& key, const Val
         return 0;
     }
     else {
-        if (data[key].first == 1) {
-            data.erase(key);
-            return 0;
-        }
-
-        int key_last = 0;
-        auto old_elem_it = list_element_cache.begin();
-        bool flag = 0;
-
-        for (auto elem_it = list_element_cache.begin(); elem_it != list_element_cache.end(); elem_it++) {
-            if ((data[*elem_it].second.empty())) {
-                old_elem_it = elem_it;
-                flag = 1;
-            }
-        }
-
-        if (flag == 1) {
-            data.erase(*old_elem_it);
-
-            data[key].first--;
-            data[key].second.pop_front();
-
-            cache_element.erase(*old_elem_it);
-            cache_element[key] = element;
-
-            list_element_cache.erase(old_elem_it);
-            list_element_cache.push_back(element);
-
-            return 0;
-        }
-
-        for (auto elem_it = list_element_cache.begin(); elem_it != list_element_cache.end(); elem_it++) {
-            if (key_last < (data[*elem_it].second.front())) {
-                key_last = (data[*elem_it].second.front());
-                old_elem_it = elem_it;
-            }
-        }
-
-        data[key].first--;
-        data[key].second.pop_front();
-
-        cache_element.erase(*old_elem_it);
-        cache_element[key] = element;
-
-        list_element_cache.erase(old_elem_it);
-        list_element_cache.push_back(element);
-
+        cache_erase(key, element);
         return 0;
     }
+
+
+
 }
 
 
