@@ -12,7 +12,7 @@ TEST(e2e, first_test){
         int element, key;
 
         key = vector_element[i];
-        kol_result += cache.lookup_update(key, vector_element[i]);
+        kol_result += cache.lookup_update(key, slow_get_page_int);
 
     }
     ASSERT_EQ(kol_result, kol_expected) << "Test failed";
@@ -28,7 +28,7 @@ TEST(e2e, second_test){
         int element, key;
 
         key = vector_element[i];
-        kol_result += cache.lookup_update(key, vector_element[i]);
+        kol_result += cache.lookup_update(key, slow_get_page_int);
 
     }
     ASSERT_EQ(kol_result, kol_expected) << "Test failed";
@@ -44,7 +44,7 @@ TEST(e2e, third_test){
         int element, key;
 
         key = vector_element[i];
-        kol_result += cache.lookup_update(key, vector_element[i]);
+        kol_result += cache.lookup_update(key, slow_get_page_int);
 
     }
     ASSERT_EQ(kol_result, kol_expected) << "Test failed";

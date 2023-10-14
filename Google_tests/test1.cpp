@@ -11,7 +11,7 @@ TEST(e2e_test, first_test) {
 
     for (int i = 0; i < vector_element.size(); i++){
         int key = vector_element[i];
-        kol_result += cache.lookup_update(key, vector_element[i]);
+        kol_result += cache.lookup_update(key, slow_get_page_int);
 
     }
 
@@ -28,7 +28,7 @@ TEST(e2e_test, second_test) {
 
     for (int i = 0; i < vector_element.size(); i++){
         int key = vector_element[i];
-        kol_result += cache.lookup_update(key, vector_element[i]);
+        kol_result += cache.lookup_update(key, slow_get_page_int);
 
     }
 
@@ -43,7 +43,7 @@ TEST(e2e_test, third_test) {
 
     for (int i = 0; i < vector_element.size(); i++){
         int key = vector_element[i];
-        kol_result += cache.lookup_update(key, vector_element[i]);
+        kol_result += cache.lookup_update(key, slow_get_page_int);
 
     }
 

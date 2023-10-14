@@ -4,6 +4,7 @@
 #include <list>
 #include <unordered_map>
 
+typedef int (*FunctionPointer)(int);
 int slow_get_page_int(int element) {
     return element;
 }
@@ -13,7 +14,7 @@ class LFU_cache {
 public:
     LFU_cache(int size_cache);
 
-    bool lookup_update(const KeyType& key, const ValueType& element);
+    bool lookup_update(const KeyType& key,  const FunctionPointer slow_get_page);
     void cache_erase(const KeyType& key, const ValueType& element);
 
 private:
@@ -51,7 +52,7 @@ void LFU_cache<KeyType, ValueType>::cache_erase(const KeyType &key, const ValueT
 }
 
 template <typename KeyType, typename ValueType>
-bool LFU_cache<KeyType, ValueType>::lookup_update(const KeyType& key, const ValueType& element) {
+bool LFU_cache<KeyType, ValueType>::lookup_update(const KeyType& key,  const FunctionPointer slow_get_page) {
 
     if (data.find(key) != data.end()) {
         int old_count = data[key].second;
@@ -68,21 +69,22 @@ bool LFU_cache<KeyType, ValueType>::lookup_update(const KeyType& key, const Valu
         list_key[new_count].push_back(key);
         data_it[key] = prev(list_key[new_count].end());
 
-        return 1;
+        return true;
 
     }
 
     else if (data.size() < size_cache){
-        data[key] = {element, 1};
+        data[key] = {slow_get_page(key), 1};
         list_key[1].push_back(key);
         data_it[key] = prev(list_key[1].end());
 
-        return 0;
+        return false;
     }
 
     else {
-        cache_erase(key, element);
-        return 0;
+        cache_erase(key, slow_get_page(key));
+
+        return false;
     }
 }
 

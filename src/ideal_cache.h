@@ -5,6 +5,8 @@
 #include <list>
 #include <vector>
 
+typedef int (*FunctionPointer)(int);
+
 int slow_get_page_int(int element) {
     return element;
 }
@@ -14,7 +16,7 @@ class Ideal_cache {
 public:
     Ideal_cache(int size_cache);
     void data_put(const KeyType& key, const ValueType& index);
-    bool lookup_update(const KeyType& key, const ValueType& element);
+    bool lookup_update(const KeyType& key, const FunctionPointer slow_get_page);
     void cache_erase(const KeyType& key, const ValueType& element);
     void alternative_erase(const KeyType& key, const ValueType& element);
 
@@ -98,8 +100,7 @@ void Ideal_cache<KeyType, ValueType>::cache_erase(const KeyType &key, const Valu
 }
 
 template <typename KeyType, typename ValueType>
-bool Ideal_cache<KeyType, ValueType>::lookup_update(const KeyType& key, const ValueType& element) {
-
+bool Ideal_cache<KeyType, ValueType>::lookup_update(const KeyType& key, const FunctionPointer slow_get_page) {
     if (cache_element.find(key) != cache_element.end()) {
         data[key].first--;
         data[key].second.pop_front();
@@ -107,29 +108,29 @@ bool Ideal_cache<KeyType, ValueType>::lookup_update(const KeyType& key, const Va
         if (data[key].second.empty()) {
             data.erase(key);
         }
-        return 1;
+        return true;
     }
     else if (cache_element.size() < size_cache) {
 
         if (data[key].first == 1) {
             data.erase(key);
-            return 0;
+            return false;
         }
-
-        cache_element[key] = element;
+        ValueType val = slow_get_page(key);
+        cache_element[key] = val;
         data[key].first--;
         data[key].second.pop_front();
 
-        list_element_cache.push_back(element);
+        list_element_cache.push_back(val);
         if (data[key].second.empty()) {
             data.erase(key);
         }
 
-        return 0;
+        return false;
     }
     else {
-        cache_erase(key, element);
-        return 0;
+        cache_erase(key, slow_get_page(key));
+        return false;
     }
 
 

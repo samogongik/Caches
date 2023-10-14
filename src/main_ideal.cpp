@@ -37,7 +37,7 @@ int main()
     for (int i = 0; i < vector_element.size(); i++){
         int key = vector_element[i];
         slow_get_page_int(key);
-        kol += cache.lookup_update(key, slow_get_page_int(key));
+        kol += cache.lookup_update(key, slow_get_page_int);
 
 
     }
